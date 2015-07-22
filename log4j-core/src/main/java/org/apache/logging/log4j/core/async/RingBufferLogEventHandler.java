@@ -41,7 +41,11 @@ public class RingBufferLogEventHandler implements
     public void onEvent(final RingBufferLogEvent event, final long sequence,
             final boolean endOfBatch) throws Exception {
         event.execute(endOfBatch);
-        event.clear();
+
+        //It causes referenced LogEvents properties is being null in AbstractDatabaseManager.buffer list
+        //Because AbstractDatabaseManager adds LogEvents into array list to commit later in write method
+        //referenced objects properties are being null when try to access in writeInterval method.
+        //event.clear();
 
         // notify the BatchEventProcessor that the sequence has progressed.
         // Without this callback the sequence would not be progressed
